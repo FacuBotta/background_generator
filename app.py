@@ -1,13 +1,28 @@
-from PIL import Image, ImageDraw, ImageFont
 from takeAiSuggestion import give_tip
+from PIL import Image, ImageDraw, ImageFont
+from dotenv import load_dotenv
+import os
 import ctypes
 import pyautogui
 
-# Function to set the wallpaper
-def set_wallpaper(image_path):
-    # Call the Windows API function to set the wallpaper
-    ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
+# Load the .env file 
+load_dotenv()
 
+# Load your interest from .env file and making a liste
+env_inrerests = os.getenv("INTERESTS")
+interests = env_inrerests.split(',')
+
+# Make sure you have changed it to your actual path!
+env_path = os.getenv("PATH_TO_THE_PROJECT")
+
+# Function to set the wallpaper
+def set_wallpaper(env_path):
+    # Complete the path to the new image
+    path = env_path + "\\assets\\newBackgroung.jpg"
+    # Call the Windows API function to set the wallpaper
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 3)
+
+# Function to wrap the text
 def wrap_text(text, font, max_width):
     lines = []
     words = text.split()
@@ -18,15 +33,15 @@ def wrap_text(text, font, max_width):
         lines.append(line)
     return lines
 
-def generate_image(title, text, save_path, topic):
+def generate_image(title, text, topic):
     # Get the screen size
     width, height = pyautogui.size()
     
-    image = Image.open('./baseBackground.jpg')
-    # Resize the image to match screen size
+    # Open and resize the image to match the screen size
+    image = Image.open('./assets/baseBackground.jpg')
     image = image.resize((width, height))
 
-    # Create a draw object to draw on the image
+    # Create a draw object to draw the text on the image
     draw = ImageDraw.Draw(image)
     
     # Define the font and text size
@@ -52,31 +67,28 @@ def generate_image(title, text, save_path, topic):
         y_title += title_font.getmask(line).getbbox()[3]  # Add the height of the line to the y-axis
     
     # Calculate the position to place the text below the title
-    y_text = y_title + 50 # Adjust this value to place the text below the title
+    y_text = y_title + 50
 
     # Draw the wrapped text on the image
     for line in wrapped_text:
         draw.text((x, y_text), line, fill="white", font=font)
         y_text += font.getmask(line).getbbox()[3] + 10 # Add the height of the line to the y-axis
         
-    # Draw the wrapped text on the image
+    # Draw the current topic on the image
     draw.text((x, y_text + 20), f"- {topic} -", fill="#80dfff", font=topic_font)
     
     # Save the image
-    image.save(save_path)
+    image.save('./assets/newBackgroung.jpg')
 
-# Example usage
-interests = ['javascript', 'typescript', 'bash', 'ssh', 'HTML', 'python']
 
+
+# Asking llama3 for advice 
 aiResponse = give_tip(interests)
-
 title = aiResponse['title']
 text = aiResponse['text']
 topic_of_today = aiResponse['topic']
-save_path = "C:\\Users\\User\\Documents\\winWallpaperGenerator\\newImage.jpg"
 
-# generate_image(textJson, save_path)
-generate_image(title, text, save_path, topic_of_today)
-print(len(text))
+# generate_image
+generate_image(title, text, topic_of_today)
 # Call the function to set the new wallpaper
-set_wallpaper(save_path)
+set_wallpaper(env_path)
