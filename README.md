@@ -21,7 +21,7 @@
 ### Optional
 
 > In my case, I created a .sh file to then perform a Windows automatic task that will run it after starting the session. So, I'll have a new background generated every time I turn on my computer!
-> Here's how my file looks (notice that in my case, I have a virtual environment where I installed the dependencies and I must activate it to run the script):
+> Here's how my file looks (see that in my case, I have a virtual environment where I installed the dependencies and I must activate it to run the script):
 ```sh
      #!/bin/bash
 
