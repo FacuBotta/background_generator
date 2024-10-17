@@ -10,8 +10,8 @@
 
 ## Configuration
 
-> Download the repository
-> Optional: Create a virtual environment
+> Download the repository.
+> Optional: Create a virtual environment.
 > Install the dependencies by running
 > ```  pip install -r requirements.txt ```
 > Modify the .env file following the instructions inside
